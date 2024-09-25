@@ -60,7 +60,7 @@ export const loginUser = async (req, res) => {
         }, 'CLIENT_SECRET_KEY', { expiresIn: '60m' });
 
         // after token creation set this in cookie
-        res.cookie('token', token, { httpOnly: true, secure: false })
+        res.cookie('token', token, { httpOnly: true, secure: true })
             .json({
                 success: true,
                 message: 'Logged in successfully',
