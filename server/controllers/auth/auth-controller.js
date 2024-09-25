@@ -60,17 +60,31 @@ export const loginUser = async (req, res) => {
         }, 'CLIENT_SECRET_KEY', { expiresIn: '60m' });
 
         // after token creation set this in cookie
-        res.cookie('token', token, { httpOnly: true, secure: true })
-            .json({
-                success: true,
-                message: 'Logged in successfully',
-                user: {
-                    email: checkUser.email,
-                    role: checkUser.role,
-                    id: checkUser._id,
-                    userName: checkUser.userName
-                }
-            });
+        // commenting this because it is not qorking after deploying on render or we need to buy custom domain to run this
+        // res.cookie('token', token, { httpOnly: true, secure: true })
+        //     .json({
+        //         success: true,
+        //         message: 'Logged in successfully',
+        //         user: {
+        //             email: checkUser.email,
+        //             role: checkUser.role,
+        //             id: checkUser._id,
+        //             userName: checkUser.userName
+        //         }
+        //     });
+
+        // using another method to fix this issue which is comming after deploying on render
+        res.status(200).json({
+            success: true,
+            message: 'Logged in successfully',
+            token,
+            user: {
+                email: checkUser.email,
+                role: checkUser.role,
+                id: checkUser._id,
+                userName: checkUser.userName
+            }
+        });
 
     } catch (error) {
         console.log(error);
@@ -90,9 +104,34 @@ export const logoutUser = (req, res) => {
 }
 
 // auth middleware
+// commenting this because it is not qorking after deploying on render or we need to buy custom domain to run this
+// export const authMiddleware = async (req, res, next) => {
+//     // check the token first
+//     const token = req.cookies.token;
+//     if (!token) return res.status(401).json({
+//         success: false,
+//         message: 'Unauthorized user!'
+//     });
+
+//     try {
+//         // then decode the token 
+//         const decoded = jwt.verify(token, 'CLIENT_SECRET_KEY');
+//         req.user = decoded;
+//         next();
+//     } catch (error) {
+//         res.status(401).json({
+//             success: false,
+//             message: 'Unauthorized user!'
+//         });
+//     }
+// }
+
+// using another method to fix this issue which is comming after deploying on render
 export const authMiddleware = async (req, res, next) => {
-    // check the token first
-    const token = req.cookies.token;
+    // get the token from headers
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
     if (!token) return res.status(401).json({
         success: false,
         message: 'Unauthorized user!'

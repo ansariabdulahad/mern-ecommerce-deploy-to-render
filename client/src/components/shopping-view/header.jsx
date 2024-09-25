@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { shoppingViewHeaderMenuItems } from '@/config'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '../ui/avatar'
-import { logoutUser } from '@/store/auth-slice'
+import { logoutUser, resetTokenAndCredentials } from '@/store/auth-slice'
 import { Separator } from '../ui/separator'
 import UserCartWrapper from './cart-wrapper'
 import { fetchCartItems } from '@/store/shop/cart-slice'
@@ -61,7 +61,13 @@ const HeaderRightContent = () => {
     const [openCartSheet, setOpenCartSheet] = useState(false);
 
     const handleLogout = () => {
-        dispatch(logoutUser());
+        // commenting this because it is not qorking after deploying on render or we need to buy custom domain to run this
+        // dispatch(logoutUser());
+
+        // using another method to fix this issue which is comming after deploying on render
+        dispatch(resetTokenAndCredentials());
+        sessionStorage.clear();
+        navigate('/auth/login');
     }
 
     // for cart

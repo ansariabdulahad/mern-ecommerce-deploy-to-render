@@ -31,7 +31,8 @@ function App() {
 
   // use middleware to check if user is authenticated every time when page renders
   useEffect(() => {
-    dispatch(checkAuth());
+    const token = JSON.parse(sessionStorage.getItem('token'));
+    dispatch(checkAuth(token));
   }, [dispatch]);
 
   if (isLoading) return <div className="flex justify-center items-center w-full min-h-screen bg-background">
